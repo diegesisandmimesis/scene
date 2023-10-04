@@ -16,6 +16,11 @@ class SceneDaemon: Scene
 	// Number of turns between each run of the daemon, once started.
 	interval = 1
 
+	// Since we're polled every turn by the sceneController daemon
+	// (instead of running our own daemon) we need a counter to
+	// keep track
+	_intervalCounter = 0
+
 	// Turn the scene started on.
 	startTurn = nil
 
@@ -32,7 +37,7 @@ class SceneDaemon: Scene
 	runCount = 0
 
 	// Number of turns since we started.
-	runTurns() {
+	getDuration() {
 		if(startTurn == nil)
 			return(0);
 		return(libGlobal.totalTurns - startTurn);
@@ -71,34 +76,9 @@ class SceneDaemon: Scene
 		start();
 	}
 
-/*
-	// Create a new daemon.
-	startDaemon(n?) {
-		if(daemonObj != nil)
-			return(nil);
-
-		daemonObj = new Daemon(self, &_run, (n ? n : 1));
-
-		return(true);
-	}
-
-	// Stop a running daemon.
-	killDaemon() {
-		if(daemonObj == nil)
-			return(nil);
-
-		stopDaemon();
-
-		daemonObj.removeEvent();
-		daemonObj = nil;
-
-		return(true);
-	}
-*/
-
 	// See if we should start.
 	// PROBABLY called by the sceneController
-	_tryStart() {
+	tryStarting() {
 		if(_startCheck()) {
 			_start();
 			return(true);
@@ -106,7 +86,7 @@ class SceneDaemon: Scene
 		return(nil);
 	}
 
-	_tryStop() {
+	tryStopping() {
 		local r;
 
 		if(!isActive())
@@ -146,10 +126,41 @@ class SceneDaemon: Scene
 			removeScene();
 	}
 
+	// Interval check.
+	// With the interval property set to n, we run every n turns.
+	// Returns boolean true if this is the nth turn.
+	_checkInterval() {
+		// An interval of one means run every turn, always true.
+		if(interval == 1)
+			return(true);
+
+		// We never run for a negative or zero interval.
+		if(interval < 1)
+			return(nil);
+
+		// Increment the interval counter.
+		_intervalCounter += 1;
+
+		// If the counter is less than n, don't run this turn.
+		if(_intervalCounter < interval)
+			return(nil);
+
+		// If we're here, then the counter >= n, so we'll
+		// run this turn.  So:  first, reset the counter:
+		_intervalCounter = 0;
+
+		// Then return true.
+		return(true);
+	}
+
 	// See if we should run this turn.
 	_runCheck() {
 		local b;
 
+		// Check to see if we're scheduled to run this turn.
+		if(_checkInterval() != true)
+			return(nil);
+		
 		// See if we're supposed to skip this turn.
 		// We do some juggling because we unset skipTurn every turn.
 		b = skipTurn;
@@ -166,21 +177,17 @@ class SceneDaemon: Scene
 			return;
 
 		// Do whatever we're gonna do.
-		run();
+		sceneAction();
 
 		// See if we should stop now.
-		_tryStop();
+		tryStopping();
 	}
 
 	// Stub methods of instances to overwrite.
-	startCheck() { return(nil); }
+	startCheck() { return(true); }
 	stopCheck() { return(nil); }
 	start() {}
 	stop(v?) {}
 	//stopDaemon() {}
 	runCheck() { return(true); }
-	run() {
-		if(self.ofKind(Script))
-			doScript();
-	}
 ;

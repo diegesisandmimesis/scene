@@ -19,6 +19,7 @@ sceneModuleID: ModuleID {
 class Scene: Syslog
 	syslogID = 'Scene'
 
+foozle = 'default'
 	active = nil
 
 	_senseActions = static [ ExamineAction, LookAction, SmellAction,
@@ -155,6 +156,7 @@ class Scene: Syslog
 	removeScene() { beforeAfterController.removeScene(self); }
 
 	sceneBeforeAction() {}
+	sceneAction() {}
 	sceneAfterAction() {}
 
 	initializeScene() {}

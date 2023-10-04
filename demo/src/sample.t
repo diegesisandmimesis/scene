@@ -31,6 +31,14 @@ versionInfo: GameID
 		"This is a simple test game that demonstrates the features
 		of the scene library.
 		<.p>
+		The only interesting thing to test is comparing
+		<.p>
+		\n\t<b>&gt;X SIGN</b>
+		<.p>
+		...with...
+		<.p>
+		\n\t<b>&gt;READ SIGN</b>
+		<.p>
 		Consult the README.txt document distributed with the library
 		source for a quick summary of how to use the library in your
 		own games.
@@ -44,8 +52,8 @@ startRoom: Room 'Void'
 	"This is a featureless void with a sign on what passes for a wall. "
 ;
 +sign: Fixture 'sign' 'sign'
-	"Reading this sign toggles the scene, but not via logic in the
-	description. "
+	"Reading this sign (but not examining/looking at it) triggers
+	the scene, but not via logic in the description. "
 ;
 +me: Person;
 
@@ -53,11 +61,37 @@ demoScene: SceneTrigger
 	triggerObject = sign
 	triggerAction = ReadAction
 	sceneBeforeAction() {
-		"Before a matching action. ";
+		"\nThis is the scene's sceneBeforeAction(), which doesn't
+		really do much. <.p> ";
+	}
+	sceneAction() {
+		"<.p>This is the scene triggered via <b>&gt;READ SIGN</b>. <.p> ";
 	}
 	sceneAfterAction() {
-		"After a matching action. ";
+		"<.p>\nThis is the scene's sceneAfterAction(), which does
+		about as much as the sceneBeforeAction(), only later. "; 
 	}
 ;
 
-gameMain: GameMainDef initialPlayerChar = me;
+gameMain: GameMainDef
+	initialPlayerChar = me
+
+	newGame() {
+		showIntro();
+		runGame(true);
+	}
+
+	showIntro() {
+#ifdef SYSLOG
+		"This demo was compiled with the <b>-D SYSLOG</b> flag,
+		meaning there will be a bunch of debugging output.
+		<.p>
+		The lines starting with <q>sceneController:</q> show the timing
+		of the various stages of the scene controller's operation, and
+		the lines starting with <q>sceneTrigger:</q> show the state
+		of the demo scene, specifically how well the current action
+		matches the trigger conditions.
+		<.p> ";
+#endif // SYSLOG
+	}
+;
