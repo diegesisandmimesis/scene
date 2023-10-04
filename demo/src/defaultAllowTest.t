@@ -1,6 +1,6 @@
 #charset "us-ascii"
 //
-// sample.t
+// defaultAllowTest.t
 // Version 1.0
 // Copyright 2022 Diegesis & Mimesis
 //
@@ -8,7 +8,7 @@
 //
 // It can be compiled via the included makefile with
 //
-//	# t3make -f makefile.t3m
+//	# t3make -f defaultAllowTest.t3m
 //
 // ...or the equivalent, depending on what TADS development environment
 // you're using.
@@ -40,24 +40,12 @@ versionInfo: GameID
 	}
 ;
 
-startRoom: Room 'Void'
-	"This is a featureless void with a sign on what passes for a wall. "
-;
-+sign: Fixture 'sign' 'sign'
-	"Reading this sign toggles the scene, but not via logic in the
-	description. "
-;
+startRoom: Room 'Void' "This is a featureless void.";
 +me: Person;
++pebble: Thing 'small round pebble' 'pebble' "A small, round pebble. ";
 
-demoScene: SceneTrigger
-	triggerObject = sign
-	triggerAction = ReadAction
-	sceneBeforeAction() {
-		"Before a matching action. ";
-	}
-	sceneAfterAction() {
-		"After a matching action. ";
-	}
+pebbleScene: SceneDefaultAllow
+	denyList = TakeAction
 ;
 
 gameMain: GameMainDef initialPlayerChar = me;
