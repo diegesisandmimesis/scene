@@ -54,6 +54,12 @@ startRoom: Room 'Void'
 +sign: Fixture 'sign' 'sign'
 	"Reading this sign (but not examining/looking at it) triggers
 	the scene, but not via logic in the description. "
+	dobjFor(Read) {
+		action() {
+			"The sign says:
+			<q>[This space intentionally left blank]</q>. ";
+		}
+	}
 ;
 +me: Person;
 
@@ -65,7 +71,8 @@ demoScene: SceneTrigger
 		really do much. <.p> ";
 	}
 	sceneAction() {
-		"<.p>This is the scene triggered via <b>&gt;READ SIGN</b>. <.p> ";
+		"<.p>This is the scene triggered via
+		<b>&gt;READ SIGN</b>. <.p> ";
 	}
 	sceneAfterAction() {
 		"<.p>\nThis is the scene's sceneAfterAction(), which does

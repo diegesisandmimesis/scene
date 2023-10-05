@@ -2,6 +2,95 @@
 //
 // scene.t
 //
+//	A TADS3 module for implementing scenes.
+//
+//
+// BASIC USAGE
+//
+//	A scene's action methods are called on every turn the scene is
+//	active.  For simple scenes, this is when their "active" property
+//	is true.
+//
+//	The base action method is sceneAction(), which will be called by
+//	a daemon owned by the sceneController singleton.  The call happens
+//	after the action for the turn is resolved.
+//
+//		// Declare a uselessly-minimal scene.
+//		myScene: Scene
+//			active = true
+//			sceneAction() {
+//				"<.p>This is the scene, doing nothing. ";
+//			}
+//		;
+//
+//	This will display "This is the scene, doing nothing. " after the turn's
+//	action reports, and it will do exactly the same thing every turn.
+//
+//	In addition to sceneAction(), the following methods are called
+//	every turn:
+//
+//		sceneBeforeAction()
+//			Called during the turn's beforeAction() window.
+//
+//		sceneAfterAction()
+//			Called during the turn's afterAction() window.
+//
+//
+//	Simple scenes like the above can only be turned on and off by hand:
+//
+//		// Disable the scene.
+//		myScene.setActive(nil);
+//
+//		// Enable the scene.
+//		myScene.setActive(true);
+//
+//	In addition, there are a couple Scene subclasses that handled
+//	running scenes automatically:
+//
+//		// A scene that will automatically start when
+//		// someObject.someProperty == 'foo' and stop when
+//		// someObject.someProperty == 'bar'.
+//		myScene: SceneDaemon
+//			startCheck() {
+//				return(someObject.someProperty == 'foo');
+//			}
+//			stopCheck() {
+//				return(someObject.someProperty == 'bar');
+//			}
+//			start() {
+//				"<.p>This is displayed when the scene starts. ";
+//			}
+//			stop(v?) {
+//				"<.p>This is displayed when the scene ends. ";
+//			}
+//			sceneAction() {
+//				"<.p>This is the scene action. ";
+//			}
+//		;
+//
+//	In addition to automatically stopping when the condition(s) defined
+//	in stopCheck() are true, you can manually stop the scene:
+//
+//		// Manually stop the scene.  The argument is saved as
+//		// myScene.stopState
+//		myScene.stop(someArbitraryStringOrObject);
+//
+//
+//	Another way to handle automatically starting a scene is the
+//	SceneTrigger class:
+//
+//		// A scene that runs whenever the player reads the sign.
+//		myScene: SceneTrigger
+//			triggerObject = sign
+//			triggerAction = ReadAction
+//			sceneAction() {
+//				"<.p>This is triggered by reading the sign. ";
+//			}
+//		;
+//
+//	Since all scenes get a sceneBeforeAction() and sceneAfterAction(), this
+//	can be used to pre-empt/block actions.  Two 
+//		
 //
 #include <adv3.h>
 #include <en_us.h>
@@ -19,7 +108,6 @@ sceneModuleID: ModuleID {
 class Scene: Syslog
 	syslogID = 'Scene'
 
-foozle = 'default'
 	active = nil
 
 	_senseActions = static [ ExamineAction, LookAction, SmellAction,
@@ -155,9 +243,17 @@ foozle = 'default'
 	// Remove this scene from notifications.
 	removeScene() { beforeAfterController.removeScene(self); }
 
-	sceneBeforeAction() {}
-	sceneAction() {}
-	sceneAfterAction() {}
-
+	// Called during preinit.
 	initializeScene() {}
+
+	trySceneAction() { sceneAction(); }
+
+	// Stub methods for the "stuff" the scene needs to do.
+	// sceneBeforeAction() gets called during the turn's beforeAction()
+	// sceneAfterAction() gets called during the turn's afterAction()
+	// sceneAction() gets called when daemons update (after the action
+	// for the turn is resolved)
+	sceneBeforeAction() {}
+	sceneAfterAction() {}
+	sceneAction() {}
 ;

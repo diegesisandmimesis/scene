@@ -84,10 +84,10 @@ sceneController: BeforeAfterThing, Syslog, PreinitObject
 
 		_sceneList.forEach(function(o) {
 			if(o.isActive()) {
-				o.sceneAction();
+				o.trySceneAction();
 			} else {
 				if(o.ofKind(SceneDaemon))
-					tryStarting();
+					o.tryStarting();
 			}
 		});
 

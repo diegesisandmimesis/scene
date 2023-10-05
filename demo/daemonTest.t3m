@@ -2,11 +2,11 @@
 -D MESSAGESTYLE=neu
 -Fy obj -Fo obj
 -Fs ../../
--o games/defaultAllowTest.t3
+-o games/daemonTest.t3
 -lib system
 -lib adv3/adv3
 -lib beforeAfter/beforeAfter
 -lib senseGrep/senseGrep
 -lib syslog/syslog
 -lib ../scene
--source src/defaultAllowTest.t
+-source src/daemonTest.t

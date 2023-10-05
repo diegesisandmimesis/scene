@@ -1,6 +1,6 @@
 #charset "us-ascii"
 //
-// defaultAllowTest.t
+// daemonTest.t
 // Version 1.0
 // Copyright 2022 Diegesis & Mimesis
 //
@@ -8,7 +8,7 @@
 //
 // It can be compiled via the included makefile with
 //
-//	# t3make -f defaultAllowTest.t3m
+//	# t3make -f daemonTest.t3m
 //
 // ...or the equivalent, depending on what TADS development environment
 // you're using.
@@ -42,11 +42,29 @@ versionInfo: GameID
 
 startRoom: Room 'Void' "This is a featureless void.";
 +me: Person;
-+pebble: Thing 'small round pebble' 'pebble' "A small, round pebble. ";
++pebble: Thing 'small round pebble' 'pebble'
+	"A small, round pebble.  Picking it up starts the scene. "
+;
 
-pebbleScene: SceneDefaultAllow
-	active = true
-	denyList = TakeAction
+demoScene: SceneDaemon
+	unique = true
+
+	startCheck() {
+		return(pebble.location == me);
+	}
+	stopCheck() {
+		return(pebble.location != me);
+	}
+	start() {
+		"<.p>This is the scene daemon starting. ";
+	}
+	stop(v?) {
+		"<.p>This is the scene daemon stopping. ";
+	}
+	sceneAction() {
+		"This is the scene daemon, which has been running
+			<<toString(getDuration())>> turns. ";
+	}
 ;
 
 gameMain: GameMainDef
@@ -58,8 +76,8 @@ gameMain: GameMainDef
 	}
 
 	showIntro() {
-		"This demo contains a default allow scene.  It permits
-		all actions except <b>&gt;TAKE</b>. 
+		"This demo contains a simple daemon-based scene.  The
+		scene starts when you <b>&gt;TAKE PEBBLE</b>.
 		<.p> ";
 	}
 ;

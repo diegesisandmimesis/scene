@@ -1,6 +1,6 @@
 #charset "us-ascii"
 //
-// defaultAllowTest.t
+// basicTest.t
 // Version 1.0
 // Copyright 2022 Diegesis & Mimesis
 //
@@ -8,7 +8,7 @@
 //
 // It can be compiled via the included makefile with
 //
-//	# t3make -f defaultAllowTest.t3m
+//	# t3make -f basicTest.t3m
 //
 // ...or the equivalent, depending on what TADS development environment
 // you're using.
@@ -44,9 +44,11 @@ startRoom: Room 'Void' "This is a featureless void.";
 +me: Person;
 +pebble: Thing 'small round pebble' 'pebble' "A small, round pebble. ";
 
-pebbleScene: SceneDefaultAllow
+demoScene: Scene
 	active = true
-	denyList = TakeAction
+	sceneAction() {
+		"<.p>This is the scene, doing nothing. ";
+	}
 ;
 
 gameMain: GameMainDef
@@ -58,8 +60,7 @@ gameMain: GameMainDef
 	}
 
 	showIntro() {
-		"This demo contains a default allow scene.  It permits
-		all actions except <b>&gt;TAKE</b>. 
+		"This demon contains a simple scene that runs every turn.
 		<.p> ";
 	}
 ;

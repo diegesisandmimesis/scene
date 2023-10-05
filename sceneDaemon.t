@@ -10,6 +10,9 @@
 #include "scene.h"
 
 class SceneDaemon: Scene
+	// Is the scene available to start?
+	available = true
+
 	// If set, scene only runs once.
 	unique = nil
 
@@ -47,10 +50,14 @@ class SceneDaemon: Scene
 	// Contrasted with _startCheck(), which determines if the scene
 	// SHOULD start.
 	isAvailable() {
+		if(available != true)
+			return(nil);
 		if(unique && (runCount > 0))
 			return(nil);
 		return(true);
 	}
+
+	setAvailable(v?) { available = ((v == true) ? true : nil); }
 
 	// Wrapper to make it easier to overwrite startCheck() without
 	// having to repeat basic bookkeeping checks.
@@ -67,10 +74,12 @@ class SceneDaemon: Scene
 		if(isActive() == true)
 			return;
 
+		_debug('starting daemon');
+
 		setActive(true);
 
 		// Remember when we started.
-		startTurn = libGlobal.totalTurns - 1;
+		startTurn = libGlobal.totalTurns;
 
 		//startDaemon();
 		start();
@@ -79,6 +88,7 @@ class SceneDaemon: Scene
 	// See if we should start.
 	// PROBABLY called by the sceneController
 	tryStarting() {
+		_debug('tryStarting()');
 		if(_startCheck()) {
 			_start();
 			return(true);
@@ -171,9 +181,9 @@ class SceneDaemon: Scene
 		return(runCheck());
 	}
 
-	_run() {
+	trySceneAction() {
 		// Make sure we're running this turn.
-		if(_runCheck() != nil)
+		if(_runCheck() != true)
 			return;
 
 		// Do whatever we're gonna do.

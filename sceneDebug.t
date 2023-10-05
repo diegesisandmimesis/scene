@@ -9,6 +9,23 @@
 
 #ifdef SYSLOG
 
+modify SceneDaemon
+	_startCheck() {
+		_debug('_startCheck:');
+		_debug('\tisActive() = <<toString(isActive())>>');
+		_debug('\tisAvailable() = <<toString(isAvailable())>>');
+		_debug('\tstartCheck() = <<toString(startCheck())>>');
+		return(inherited());
+	}
+
+	trySceneAction() {
+		_debug('trySceneAction:');
+		_debug('\tisActive() = <<toString(isActive())>>');
+		_debug('\t_runCheck() = <<toString(_runCheck())>>');
+		inherited();
+	}
+;
+
 modify SceneTrigger
 	matchTrigger(actor, obj, action) {
 		_debug('matchTrigger:');
