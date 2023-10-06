@@ -18,19 +18,20 @@ modify SceneDaemon
 		return(inherited());
 	}
 
+/*
 	trySceneAction() {
 		_debug('trySceneAction:');
 		_debug('\tisActive() = <<toString(isActive())>>');
 		_debug('\t_runCheck() = <<toString(_runCheck())>>');
 		inherited();
 	}
+*/
 ;
 
 modify SceneTrigger
-	matchTrigger(actor, obj, action) {
-		_debug('matchTrigger:');
-		_debug('\tisAvailable() = <<toString(isAvailable())>>');
-		_debug('\tisTriggerActive() = <<toString(isTriggerActive())>>');
+	matchRule(actor?, obj?, action?) {
+		_debug('matchRule:');
+		_debug('\tisRuleActive() = <<toString(isRuleActive())>>');
 		_debug('\tmatchAction() = <<toString(matchAction(action))>>');
 		_debug('\tmatchObject() = <<toString(matchObject(obj))>>');
 		_debug('\tmatchActor() = <<toString(matchActor(actor))>>');

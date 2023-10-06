@@ -1,6 +1,6 @@
 #charset "us-ascii"
 //
-// daemonTest.t
+// triggerTest.t
 // Version 1.0
 // Copyright 2022 Diegesis & Mimesis
 //
@@ -8,7 +8,7 @@
 //
 // It can be compiled via the included makefile with
 //
-//	# t3make -f daemonTest.t3m
+//	# t3make -f triggerTest.t3m
 //
 // ...or the equivalent, depending on what TADS development environment
 // you're using.
@@ -31,6 +31,14 @@ versionInfo: GameID
 		"This is a simple test game that demonstrates the features
 		of the scene library.
 		<.p>
+		The only interesting thing to test is comparing
+		<.p>
+		\n\t<b>&gt;X SIGN</b>
+		<.p>
+		...with...
+		<.p>
+		\n\t<b>&gt;READ SIGN</b>
+		<.p>
 		Consult the README.txt document distributed with the library
 		source for a quick summary of how to use the library in your
 		own games.
@@ -49,35 +57,36 @@ gameMain: GameMainDef
 	}
 
 	showIntro() {
-		"This demo contains a simple daemon-based scene.  The
-		scene starts when you <b>&gt;TAKE PEBBLE</b>.
-		<.p> ";
 	}
 ;
 
-startRoom: Room 'Void' "This is a featureless void.";
+startRoom: Room 'Void'
+	"This is a featureless void with a sign on what passes for a wall. "
+;
++sign: Fixture 'sign' 'sign'
+	"Reading this sign (but not examining/looking at it) triggers
+	the scene, but not via logic in the description. "
+	dobjFor(Read) {
+		action() {
+			"The sign says:
+			<q>[This space intentionally left blank]</q>. ";
+		}
+	}
+;
 +me: Person;
-+pebble: Thing 'small round pebble' 'pebble'
-	"A small, round pebble.  Picking it up starts the scene. "
-;
 
-demoScene: SceneDaemon
-	unique = true
-
-	startCheck() {
-		return(pebble.location == me);
+myScene: Scene
+	sceneBeforeAction() {
+		"\nThis is the output of sceneBeforeAction().<.p> ";
 	}
-	stopCheck() {
-		return(pebble.location != me);
-	}
-	start() {
-		"<.p>This is the scene daemon starting. ";
-	}
-	stop(v?) {
-		"<.p>This is the scene daemon stopping. ";
+	sceneAfterAction() {
+		"\nThis is the output of sceneAfterAction().<.p> ";
 	}
 	sceneAction() {
-		"This is the scene daemon, which has been running
-			<<toString(getDuration())>> turns. ";
+		"\nThis is the output of sceneAction().<.p> ";
 	}
+;
++SceneTrigger
+	triggerObject = sign
+	triggerAction = ReadAction
 ;

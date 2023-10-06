@@ -35,23 +35,25 @@ sceneController: BeforeAfterThing, Syslog, PreinitObject
 	// Vector containing all Scene instances.
 	_sceneList = perInstance(new Vector())
 
-	// Vector containing all SceneTrigger instances.
-	// We keep a separate list (even though all SceneTriggers are
-	// Scenes) because we run through the list every time we
-	// check the current action.
-	_sceneTriggers = perInstance(new Vector())
+	// Vector containing all SceneRule instances.
+	_sceneRules = perInstance(new Vector())
 
-	// All scene triggers that the current action matches.  Reset
+	// All scene rules that the current action matches.  Reset
 	// every turn.
-	_triggerMatches = nil
-
-	// Used to remember the prior state of triggered scenes.
-	_triggerStates = nil
+	_ruleMatches = nil
 
 	execute() {
-		initSceneDaemon();
+		initSceneRules();
 		initScenes();
-		initSceneTriggers();
+		initSceneDaemon();
+	}
+
+	// Take care of initializing all the SceneRules instances.
+	initSceneRules() {
+		forEachInstance(SceneRule, function(o) {
+			o.initializeSceneRule();
+			_sceneRules.append(o);
+		});
 	}
 
 	// Take care of initializing all the Scene instnaces.
@@ -62,41 +64,10 @@ sceneController: BeforeAfterThing, Syslog, PreinitObject
 		});
 	}
 
-	// Take care of initializing all the SceneTrigger instnaces.
-	initSceneTriggers() {
-		forEachInstance(SceneTrigger, function(o) {
-			o.initializeSceneTrigger();
-			_sceneTriggers.append(o);
-		});
-	}
-
 	// Create a daemon.
 	// Runs independent of the beforeAction()/afterAction() stuff.
 	initSceneDaemon() {
 		_sceneDaemon = new Daemon(self, &updateScenes, 1);
-	}
-
-	// Called by the Daemon.  This is where we check for
-	// scenes starting and stopping this turn.
-	// This happens AFTER the action for the turn is resolved.
-	updateScenes() {
-		_debug('===updateScenes() START===');
-
-		_sceneList.forEach(function(o) {
-			if(o.isActive()) {
-				o.trySceneAction();
-			} else {
-				if(o.ofKind(SceneDaemon))
-					o.tryStarting();
-			}
-		});
-
-		// This is the last time we'll be called this
-		// turn, so clean up any cached trigger matches
-		// from this turn.
-		_clearTriggerMatches();
-
-		_debug('===updateScenes() END===');
 	}
 
 	// Add a scene to our list.
@@ -125,33 +96,18 @@ sceneController: BeforeAfterThing, Syslog, PreinitObject
 		return(true);
 	}
 
-	// Return all SceneTriggers that match the given tuple.
-	getScenesMatching(actor, obj, action) {
-		local r;
-
-		r = new Vector(_sceneTriggers.length);
-		_sceneTriggers.forEach(function(o) {
-			if(o.matchTrigger(actor, obj, action))
-				r.append(o);
-		});
-
-		return(r);
-	}
-
 	// Method called by beforeAfterController before every action.
+	// This is the earliest point in the turn we'll be called, so
+	// we handle general turn setup here.
 	globalBeforeAction() {
 		_debug('===globalBeforeAction() START===');
 
-		// This is the earliest point we're called this
-		// turn, so we create a list of triggers that
-		// match the current turn.
-		_setTriggerMatches();
+		// This is the earliest part of the turn for us, so set up
+		// stuff that we'll use throughout the turn.  This gets
+		// cleaned up later via _turnCleanup();
+		_turnSetup();
 
-		_sceneList.forEach(function(o) {
-			if(!o.isActive())
-				return;
-			o.sceneBeforeAction();
-		});
+		_sceneList.forEach(function(o) { o.trySceneBeforeAction(); });
 
 		_debug('===globalBeforeAction() END===');
 	}
@@ -160,48 +116,83 @@ sceneController: BeforeAfterThing, Syslog, PreinitObject
 	globalAfterAction() {
 		_debug('===globalAfterAction() START===');
 
-		_sceneList.forEach(function(o) {
-			if(!o.isActive())
-				return;
-			o.sceneAfterAction();
-		});
+		_sceneList.forEach(function(o) { o.trySceneAfterAction(); });
 
 		_debug('===globalAfterAction() END===');
 	}
 
+	// Called by the Daemon.  This is where we check for
+	// scenes starting and stopping this turn.
+	// This happens AFTER the action for the turn is resolved.
+	updateScenes() {
+		_debug('===updateScenes() START===');
+
+		_sceneList.forEach(function(o) {
+			o.trySceneAction();
+		});
+
+		// This is the last time we'll be called this
+		// turn, so clean up temporary stuff turn state.
+		_turnCleanup();
+
+		_debug('===updateScenes() END===');
+	}
+
+	_turnSetup() {
+		// This is the earliest point we're called this
+		// turn, so we create a list of rules that
+		// match the current turn.
+		_setRuleMatches();
+
+		_matchSceneRules();
+	}
+
+	_turnCleanup() {
+		_clearRuleMatches();
+
+		_clearSceneRules();
+	}
+
 	// We figure out what scenes are triggered by the current turn
 	// and remember the list for the rest of the turn.
-	// We also mark each of the triggered scenes as active for this
-	// turn.
-	_setTriggerMatches() {
-		_debug('setting trigger matches');
+	_setRuleMatches() {
+		_debug('setting rule matches');
 
-		// Cache the list of scenes whose triggers match.
-		_triggerMatches = getScenesMatching(gActor, gDobj, gAction);
+		// Cache the list of scenes whose rules match this turn.
+		_ruleMatches = new Vector(_sceneRules.length);
 
-		// Probably overkill, but we remember the current state
-		// of each trigger-able scene before triggering them.
-		_triggerStates = new LookupTable();
-
-		_triggerMatches.forEach(function(o) {
-			// Remember the current state.
-			_triggerStates[o] = o.isActive();
-
-			// Mark the scene as active.
-			o.setActive(true);
+		// Evaluate the rule states for this turn.
+		_sceneRules.forEach(function(o) {
+			// Evaluate the rule state for this turn,
+			// remembering it if it matches this turn.
+			if(o.fire(gActor, gDobj, gAction) == true)
+				_ruleMatches.append(o);
 		});
 	}
 
-	// We set each scene triggered this turn back to the state they
-	// started in.
-	_clearTriggerMatches() {
-		_debug('clearing trigger matches');
-		_triggerMatches.forEach(function(o) {
-			o.setActive(_triggerStates[o]);
-		});
+	// We go through our list of rule matches and reset their
+	// state.
+	_clearRuleMatches() {
+		_debug('clearing rule matches');
+		_ruleMatches.forEach(function(o) { o.clear(); });
 
 		// Deref data cached for the turn.
-		_triggerMatches = nil;
-		_triggerStates = nil;
+		_ruleMatches = nil;
+	}
+
+	// Go through the scene list, activating any scenes whose
+	// rules all match this turn.
+	_matchSceneRules() {
+		_sceneList.forEach(function(o) {
+			o.tryRuleMatch();
+		});
+	}
+
+	// Revert the state of any scenes that were only active because their
+	// rules matched this turn.
+	_clearSceneRules() {
+		_sceneList.forEach(function(o) {
+			o.tryRuleRevert();
+		});
 	}
 ;

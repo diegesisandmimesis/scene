@@ -109,6 +109,11 @@ class Scene: Syslog
 	syslogID = 'Scene'
 
 	active = nil
+	available = true
+
+	ruleList = nil
+
+	_ruleRevertFlag = nil
 
 	_senseActions = static [ ExamineAction, LookAction, SmellAction,
 		ListenToAction, TasteAction, FeelAction, SenseImplicitAction ]
@@ -123,8 +128,9 @@ class Scene: Syslog
 
 	// Can we become active?  By default we just check if we're currently
 	// active or not, but subclasses do more elaborate checks.
-	isAvailable() { return(!isActive()); }
+	isAvailable() { return(available && !isActive()); }
 
+/*
 	// Flag we set before doing a try{} finally{} test on the current
 	// action, to prevent recursion.
 	_testCurrentActionLock = nil
@@ -239,6 +245,7 @@ class Scene: Syslog
 
 		return(actor.getVisibleActors(excludeList, sense));
 	}
+*/
 
 	// Remove this scene from notifications.
 	removeScene() { beforeAfterController.removeScene(self); }
@@ -246,7 +253,83 @@ class Scene: Syslog
 	// Called during preinit.
 	initializeScene() {}
 
-	trySceneAction() { sceneAction(); }
+	// Add a rule to this scene.
+	addRule(obj) {
+		// Make sure the arg is a rule.
+		if((obj == nil) || !obj.ofKind(SceneRule))
+			return(nil);
+
+		// Create a vector to hold the list if there isn't already one.
+		if(ruleList == nil)
+			ruleList = new Vector();
+
+		// Make sure we're not adding a duplicate.
+		if(ruleList.indexOf(obj) != nil)
+			return(nil);
+
+		// Add the rule.
+		ruleList.append(obj);
+
+		// Report success.
+		return(true);
+	}
+
+	// Remove a rule from the rule list.
+	removeRule(obj) {
+		if(ruleList.indexOf(obj) == nil)
+			return(nil);
+		ruleList.removeElement(obj);
+		return(true);
+	}
+
+	// Returns boolean true iff we have rules and they all matched this
+	// turn.
+	checkRules() {
+		local i;
+
+		if(ruleList == nil)
+			return(nil);
+
+		for(i = 1; i <= ruleList.length; i++) {
+			if(ruleList[i].firedThisTurn() != true)
+				return(nil);
+		}
+
+		return(true);
+	}
+
+	// See if we should become active due to rule matching.
+	tryRuleMatch() {
+		// If we're already active, nothing to do.
+		if(isActive() == true)
+			return;
+
+		// If we don't match all rules this turn, nothing to do.
+		if(checkRules() != true)
+			return;
+
+		// Remember to revert at the end of the turn.
+		_ruleRevertFlag = true;
+
+		// Set ourselves active.
+		setActive(true);
+	}
+
+	// Revert to an inactive state if we were only active because of
+	// rule matching.
+	tryRuleRevert() {
+		if(_ruleRevertFlag != true)
+			return;
+
+		_ruleRevertFlag = nil;
+
+		setActive(nil);
+	}
+
+	trySceneAction() { if(isActive() == true) sceneAction(); }
+
+	trySceneBeforeAction() { if(isActive() == true) sceneBeforeAction(); }
+	trySceneAfterAction() { if(isActive() == true) sceneAfterAction(); }
 
 	// Stub methods for the "stuff" the scene needs to do.
 	// sceneBeforeAction() gets called during the turn's beforeAction()

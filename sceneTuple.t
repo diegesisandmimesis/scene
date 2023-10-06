@@ -16,9 +16,11 @@ class SceneTuple: object
 
 	action = nil
 
-	construct(p0?, p1?, act?) { init(p0, p1, act); }
+	location = nil
 
-	init(p0?, p1?, act?) {
+	construct(p0?, p1?, act?, loc?) { init(p0, p1, act, loc); }
+
+	init(p0?, p1?, act?, loc?) {
 		local v;
 
 		if((v = canonicalizeObject(p0)) == nil)
@@ -32,6 +34,8 @@ class SceneTuple: object
 		dstActor = v[2];
 
 		action = canonicalizeAction(act);
+
+		location = canonicalizeLocation(loc);
 
 		return(self);
 	}
@@ -62,6 +66,12 @@ class SceneTuple: object
 		if((v == nil) || !v.ofKind(Action))
 			return(nil);
 		return(v);
+	}
+
+	canonicalizeLocation(v) {
+		if((v == nil) || !v.ofKind(Thing))
+			return(nil);
+		return(v.getOutermostRoom());
 	}
 
 	// Returns boolean true if the passed args match our defined tuple.
@@ -136,12 +146,14 @@ class SceneTuple: object
 		{ return(matchSrcObject(v0) && matchDstObject(v1)); }
 	matchAction(v)
 		{ return(_matchBit(v, action)); }
+	matchLocation(v)
+		{ return(_matchBit(v, location)); }
 
 	// Match a passed tuple.
 	matchTuple(v) {
 		if((v == nil) || !v.ofKind(SceneTuple))
 			return(nil);
 		return(matchObjects(v.srcObject, v.dstObject) &&
-			matchAction(v.action));
+			matchAction(v.action) && matchLocation(v.location));
 	}
 ;

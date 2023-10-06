@@ -7,7 +7,7 @@
 
 #include "scene.h"
 
-class SceneTrigger: Scene
+class SceneTrigger: SceneRule
 	syslogID = 'SceneTrigger'
 
 	// SceneTuple to use as trigger.
@@ -22,18 +22,22 @@ class SceneTrigger: Scene
 	triggerActor = nil
 	triggerObject = nil
 	triggerAction = nil
+	triggerLocation = nil
 
 	matchActor(v) { return(trigger && trigger.matchSrcActor(v)); }
 	matchObject(v) { return(trigger && trigger.matchDstObject(v)); }
 	matchAction(v) { return(trigger && trigger.matchAction(v)); }
-	matchTrigger(actor, obj, action) {
-		return(isAvailable() && isTriggerActive() && matchAction(action)
+	matchRule(actor?, obj?, action?) {
+		return(isRuleActive() && matchAction(action)
 			&& matchActor(actor) && matchObject(obj));
 	}
 
-	isTriggerActive() { return(true); }
+	initializeSceneRule() {
+		inherited();
+		_createTuple();
+	}
 
-	initializeSceneTrigger() {
+	_createTuple() {
 		if(trigger != nil)
 			return;
 
@@ -41,12 +45,6 @@ class SceneTrigger: Scene
 			return;
 
 		trigger = new SceneTuple(triggerActor, triggerObject,
-			triggerAction);
+			triggerAction, triggerLocation);
 	}
-;
-
-class SceneSingleLocation: Scene
-	sceneLocation = nil
-
-	isActive() { return(gActor == sceneLocation); }
 ;

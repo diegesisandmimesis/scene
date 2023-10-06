@@ -40,17 +40,6 @@ versionInfo: GameID
 	}
 ;
 
-startRoom: Room 'Void' "This is a featureless void.";
-+me: Person;
-+pebble: Thing 'small round pebble' 'pebble' "A small, round pebble. ";
-
-demoScene: Scene
-	active = true
-	sceneAction() {
-		"<.p>This is the scene, doing nothing. ";
-	}
-;
-
 gameMain: GameMainDef
 	initialPlayerChar = me
 
@@ -62,5 +51,16 @@ gameMain: GameMainDef
 	showIntro() {
 		"This demon contains a simple scene that runs every turn.
 		<.p> ";
+	}
+;
+
+startRoom: Room 'Void' "This is a featureless void.";
++me: Person;
++pebble: Thing 'small round pebble' 'pebble' "A small, round pebble. ";
+
+myScene: Scene
+	active = true
+	sceneAction() {
+		"<.p>This is the output of sceneAction(). ";
 	}
 ;

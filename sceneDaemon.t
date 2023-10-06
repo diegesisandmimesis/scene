@@ -33,9 +33,6 @@ class SceneDaemon: Scene
 	// Should we skip this turn?
 	skipTurn = nil
 
-	// Daemon instance.
-	//daemonObj = nil
-
 	// Number of times we've run.
 	runCount = 0
 
@@ -81,7 +78,6 @@ class SceneDaemon: Scene
 		// Remember when we started.
 		startTurn = libGlobal.totalTurns;
 
-		//startDaemon();
 		start();
 	}
 
@@ -126,9 +122,6 @@ class SceneDaemon: Scene
 
 		// Remember the stop state.
 		stopState = v;
-
-		// Stop the daemon.
-		//killDaemon();
 
 		// If we're no longer eligible to run again,
 		// unsubscribe from notifications.
@@ -198,6 +191,5 @@ class SceneDaemon: Scene
 	stopCheck() { return(nil); }
 	start() {}
 	stop(v?) {}
-	//stopDaemon() {}
 	runCheck() { return(true); }
 ;
