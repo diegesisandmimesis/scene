@@ -10,12 +10,6 @@
 #include "scene.h"
 
 class SceneDaemon: Scene
-	// Is the scene available to start?
-	available = true
-
-	// If set, scene only runs once.
-	unique = nil
-
 	// Number of turns between each run of the daemon, once started.
 	interval = 1
 
@@ -33,9 +27,6 @@ class SceneDaemon: Scene
 	// Should we skip this turn?
 	skipTurn = nil
 
-	// Number of times we've run.
-	runCount = 0
-
 	// Number of turns since we started.
 	getDuration() {
 		if(startTurn == nil)
@@ -43,19 +34,7 @@ class SceneDaemon: Scene
 		return(libGlobal.totalTurns - startTurn);
 	}
 
-	// CAN the scene start?
-	// Contrasted with _startCheck(), which determines if the scene
-	// SHOULD start.
-	isAvailable() {
-		if(available != true)
-			return(nil);
-		if(unique && (runCount > 0))
-			return(nil);
-		return(true);
-	}
-
-	setAvailable(v?) { available = ((v == true) ? true : nil); }
-
+/*
 	// Wrapper to make it easier to overwrite startCheck() without
 	// having to repeat basic bookkeeping checks.
 	_startCheck() {
@@ -117,9 +96,6 @@ class SceneDaemon: Scene
 
 		stop(v);
 
-		// Remember that we ran.
-		runCount = runCount + 1;
-
 		// Remember the stop state.
 		stopState = v;
 
@@ -128,6 +104,7 @@ class SceneDaemon: Scene
 		if(!isAvailable())
 			removeScene();
 	}
+*/
 
 	// Interval check.
 	// With the interval property set to n, we run every n turns.
@@ -156,6 +133,7 @@ class SceneDaemon: Scene
 		return(true);
 	}
 
+/*
 	// See if we should run this turn.
 	_runCheck() {
 		local b;
@@ -192,4 +170,11 @@ class SceneDaemon: Scene
 	start() {}
 	stop(v?) {}
 	runCheck() { return(true); }
+*/
+	start() {}
+	_stop(v?) {
+		stopState = v;
+		stop(v);
+	}
+	stop(v?) {}
 ;

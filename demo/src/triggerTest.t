@@ -76,11 +76,12 @@ startRoom: Room 'Void'
 +me: Person;
 
 myScene: Scene
+	unique = true
 	sceneBeforeAction() {
 		"\nThis is the output of sceneBeforeAction().<.p> ";
 	}
 	sceneAfterAction() {
-		"\nThis is the output of sceneAfterAction().<.p> ";
+		"<.p>This is the output of sceneAfterAction().<.p> ";
 	}
 	sceneAction() {
 		"\nThis is the output of sceneAction().<.p> ";
