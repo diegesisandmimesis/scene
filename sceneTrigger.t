@@ -28,11 +28,11 @@ class SceneTrigger: SceneRule
 	matchObject(v) { return(trigger && trigger.matchDstObject(v)); }
 	matchAction(v) { return(trigger && trigger.matchAction(v)); }
 	matchRule(actor?, obj?, action?) {
-		return(isRuleActive() && matchAction(action)
+		return(isActive() && matchAction(action)
 			&& matchActor(actor) && matchObject(obj));
 	}
 
-	initializeSceneRule() {
+	initializeRule() {
 		inherited();
 		_createTuple();
 	}

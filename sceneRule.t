@@ -7,22 +7,8 @@
 
 #include "scene.h"
 
-class SceneRule: Syslog
+class SceneRule: Rule
 	syslogID = 'SceneRule'
-
-	// Our parent scene.
-	scene = nil
-
-	// Is the rule (not the scene) active?  That is, should it be checked
-	// this turn?
-	ruleActive = true
-
-	// The rule state.  That is, did this rule match the game state this
-	// turn?
-	ruleState = nil
-
-	// Last time we fired.  Used to verify that our state is current.
-	timestamp = nil
 
 	_senseActions = static [ ExamineAction, LookAction, SmellAction,
 		ListenToAction, TasteAction, FeelAction, SenseImplicitAction ]
@@ -32,9 +18,6 @@ class SceneRule: Syslog
 	// Flag we set before doing a try{} finally{} test on the current
 	// action, to prevent recursion.
 	_testCurrentActionLock = nil
-
-	isRuleActive() { return(ruleActive == true); }
-	setRuleActive(v?) { ruleActive = ((v == true) ? true : nil); }
 
 	// Make sure the argument is an Action.
 	// If it's nil, we try gAction.
@@ -146,52 +129,4 @@ class SceneRule: Syslog
 
 		return(actor.getVisibleActors(excludeList, sense));
 	}
-
-	initializeSceneRule() {
-		_initializeSceneRuleLocation();
-	}
-
-	_initializeSceneRuleLocation() {
-		if((location == nil) || !location.ofKind(Scene))
-			return;
-		location.addRule(self);
-		scene = location;
-	}
-
-	matchRule(actor?, obj?, action?) { return(true); }
-
-	setState(v?) {
-		// Canonicalize argument.
-		v = ((v == true) ? true : nil);
-
-		timestamp = libGlobal.totalTurns;
-
-		// If the rule state wouldn't change, bail.
-		if(ruleState == v)
-			return(nil);
-
-		// Set the state.
-		ruleState = v;
-
-		// Report success.
-		return(true);
-	}
-
-	getState() { return(ruleState == true); }
-
-	// Returns boolean true iff the rule state is true (its conditions
-	// are matched) this turn.
-	firedThisTurn() {
-		return((ruleState == true)
-			&& (timestamp == libGlobal.totalTurns));
-	}
-
-	// Fire the rule.
-	fire(actor?, obj?, action?) {
-		setState(matchRule(actor, obj, action));
-		return(getState());
-	}
-
-	clear() { setState(nil); }
-
 ;

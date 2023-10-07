@@ -52,6 +52,7 @@ gameMain: GameMainDef
 	initialPlayerChar = me
 
 	newGame() {
+		syslog.enable('ruleEngineController');
 		showIntro();
 		runGame(true);
 	}
@@ -91,3 +92,5 @@ myScene: Scene
 	triggerObject = sign
 	triggerAction = ReadAction
 ;
+
+myController: SceneController;

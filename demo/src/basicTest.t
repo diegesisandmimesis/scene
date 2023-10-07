@@ -44,6 +44,7 @@ gameMain: GameMainDef
 	initialPlayerChar = me
 
 	newGame() {
+		syslog.enable('ruleEngineController');
 		showIntro();
 		runGame(true);
 	}
@@ -64,3 +65,5 @@ myScene: Scene
 		"<.p>This is the output of sceneAction(). ";
 	}
 ;
+
+myController: SceneController;
