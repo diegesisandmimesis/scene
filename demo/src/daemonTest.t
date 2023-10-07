@@ -71,13 +71,19 @@ demoScene: SceneDaemon
 		"<.p>This is the scene daemon stopping. ";
 	}
 	sceneAction() {
-		"This is the scene daemon, which has been running
-			<<toString(getDuration())>> turns. ";
+		"<.p>This is the scene daemon, first started
+			<<toString(getDuration())>> turns ago.\n ";
 	}
 ;
-+SceneTrigger
++SceneStart;
+++SceneTrigger
 	triggerObject = pebble
 	triggerAction = TakeAction
+;
++SceneEnd;
+++SceneTrigger
+	triggerObject = pebble
+	triggerAction = DropAction
 ;
 
 myController: SceneController;

@@ -27,6 +27,8 @@ class Scene: RuleUser
 	unique = nil		// can we run more than once
 	runCount = 0		// how many times have we run
 
+	rulebookClass = SceneRulebook
+
 	_revertFlag = nil
 
 	// Getter and setter for active.  Done this way because subclasses
@@ -48,7 +50,8 @@ class Scene: RuleUser
 	// Called during preinit.
 	initializeScene() {}
 
-	// See if we should become active due to rule matching.
+	// Normally called by SceneRulebook.callback() when all the rules
+	// in a rulebook match.
 	tryRuleMatch() {
 		// If we're already active, nothing to do.
 		if(isActive() == true)
@@ -58,9 +61,11 @@ class Scene: RuleUser
 		if(isAvailable() != true)
 			return;
 
+/*
 		// If we don't match all rules this turn, nothing to do.
 		if(checkRulebooks() != true)
 			return;
+*/
 
 		// Remember to revert at the end of the turn.
 		_revertFlag = true;

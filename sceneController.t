@@ -73,7 +73,7 @@ class SceneController: RuleEngineController
 
 	_turnSetup() {
 		inherited();
-		_setSceneMatches();
+		//_setSceneMatches();
 	}
 
 	_turnCleanup() {
@@ -81,9 +81,11 @@ class SceneController: RuleEngineController
 		_clearSceneMatches();
 	}
 
+/*
 	_setSceneMatches() {
 		_sceneList.forEach(function(o) { o.tryRuleMatch(); });
 	}
+*/
 
 	_clearSceneMatches() {
 		_sceneList.forEach(function(o) { o.tryRuleRevert(); });

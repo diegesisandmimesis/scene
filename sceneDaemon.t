@@ -27,69 +27,15 @@ class SceneDaemon: Scene
 	// Should we skip this turn?
 	skipTurn = nil
 
+	// Should we stop this turn?
+	shutdownFlag = nil
+
 	// Number of turns since we started.
 	getDuration() {
 		if(startTurn == nil)
 			return(0);
 		return(libGlobal.totalTurns - startTurn);
 	}
-
-/*
-	// Wrapper to make it easier to overwrite startCheck() without
-	// having to repeat basic bookkeeping checks.
-	_startCheck() {
-		if(isActive())
-			return(nil);
-		if(!isAvailable())
-			return(nil);
-		return(startCheck());
-	}
-
-	// See if we should start.
-	// PROBABLY called by the sceneController
-	tryStarting() {
-		_debug('tryStarting()');
-		if(_startCheck()) {
-			_start();
-			return(true);
-		}
-		return(nil);
-	}
-
-	tryStopping() {
-		local r;
-
-		if(!isActive())
-			return(nil);
-
-		if((r = _stopCheck()) == nil)
-			return(nil);
-
-		_stop(r);
-
-		return(r);
-	}
-
-	// Should the scene stop?
-	_stopCheck() { return(stopCheck()); }
-
-	// Stop the scene.  Arg is preserved as a "return value"
-	// for the scene.
-	_stop(v?) {
-		// Mark the scene as inactive.
-		setActive(nil);
-
-		stop(v);
-
-		// Remember the stop state.
-		stopState = v;
-
-		// If we're no longer eligible to run again,
-		// unsubscribe from notifications.
-		if(!isAvailable())
-			removeScene();
-	}
-*/
 
 	// Interval check.
 	// With the interval property set to n, we run every n turns.
@@ -118,44 +64,6 @@ class SceneDaemon: Scene
 		return(true);
 	}
 
-/*
-	// See if we should run this turn.
-	_runCheck() {
-		local b;
-
-		// Check to see if we're scheduled to run this turn.
-		if(_checkInterval() != true)
-			return(nil);
-		
-		// See if we're supposed to skip this turn.
-		// We do some juggling because we unset skipTurn every turn.
-		b = skipTurn;
-		skipTurn = nil;
-		if(b == true)
-			return(nil);
-
-		return(runCheck());
-	}
-
-	trySceneAction() {
-		// Make sure we're running this turn.
-		if(_runCheck() != true)
-			return;
-
-		// Do whatever we're gonna do.
-		sceneAction();
-
-		// See if we should stop now.
-		tryStopping();
-	}
-
-	// Stub methods of instances to overwrite.
-	startCheck() { return(true); }
-	stopCheck() { return(nil); }
-	start() {}
-	stop(v?) {}
-	runCheck() { return(true); }
-*/
 	// The difference between a daemon and a default scene is that
 	// the daemon scene doesn't reset automatically.
 	tryRuleMatch() {
@@ -163,34 +71,100 @@ class SceneDaemon: Scene
 		_revertFlag = nil;
 	}
 
+	// Called by the controller, see if we're running this turn.
 	trySceneAction() {
+		// If we're not active, bail.
 		if(isActive != true)
 			return;
 
-		if(startTurn == nil)
+		// If startTurn is nil, then we're running for the
+		// first time, so we call start() (which in turn calls
+		// sceneStartAction()) instead of sceneAction().
+		if(startTurn == nil) {
 			start();
-		else
-			sceneAction();
+			return;
+		}
+
+		// Since we're running over many turns, we have several
+		// methods of pausing the scene and/or skipping turns, so
+		// we check them.
+		if(_daemonActionCheck() != true)
+			return;
+
+		// We got the shutdown flag this turn, so instead of
+		// taking a normal turn, we stop.
+		if(shutdownFlag == true) {
+			stop();
+			return;
+		}
+
+		// Run the "normal" scene action.
+		sceneAction();
 	}
 
+	// Run the daemon-specific checks to see if we're supposed to run
+	// this turn.
+	_daemonActionCheck() {
+		// We might have an interval, telling us to only run every
+		// nth turn.  Here's where we check.
+		if(_checkInterval() != true)
+			return(nil);
+		
+		// See if we're supposed to skip this turn.
+		if(skipTurn == libGlobal.totalTurns)
+			return(nil);
+
+		return(true);
+	}
+
+	// Called by the SceneEnd rulebook.
+	tryDaemonStop() {
+		// If we're not running, we can't shut down.
+		if(isActive() != true)
+			return;
+
+		// Set the flag.
+		shutdownFlag = true;
+	}
+
+	// This is called from trySceneAction() if it's the first time
+	// we've run, in which case the setActive(true) is redundant.
+	// But we do it this way so we can manually start the daemon by
+	// calling this method directly.
 	start() {
 		_debug('starting daemon');
 
+		// Mark ourselves active, possible redundantly.
 		setActive(true);
+
+		// Reset the shutdown flag.
+		shutdownFlag = nil;
 
 		// Remember when we started.
 		startTurn = libGlobal.totalTurns;
 
+		// Call the scene start action.
 		sceneStartAction();
 	}
 
+	// Stop the scene.  Arg is the stop state, which will be saved.
 	stop(v?) {
 		_debug('stopping daemon');
 
+		// Mark ourselves inactive.
+		setActive(nil);
+
+		// Remember the stop state.
 		stopState = v;
+
+		// Reset the shutdown flag.
+		shutdownFlag = nil;
+
+		// Call the scene stop action.
 		sceneStopAction();
 	}
 
+	// Stub methods.
 	sceneStartAction() {}
 	sceneStopAction() {}
 ;
