@@ -64,16 +64,10 @@ startRoom: Room 'Void' "This is a featureless void.";
 demoScene: SceneDaemon
 	unique = true
 
-	startCheck() {
-		return(pebble.location == me);
-	}
-	stopCheck() {
-		return(pebble.location != me);
-	}
-	start() {
+	sceneStartAction() {
 		"<.p>This is the scene daemon starting. ";
 	}
-	stop(v?) {
+	sceneStopAction(v?) {
 		"<.p>This is the scene daemon stopping. ";
 	}
 	sceneAction() {
@@ -81,3 +75,9 @@ demoScene: SceneDaemon
 			<<toString(getDuration())>> turns. ";
 	}
 ;
++SceneTrigger
+	triggerObject = pebble
+	triggerAction = TakeAction
+;
+
+myController: SceneController;

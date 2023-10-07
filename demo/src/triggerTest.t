@@ -52,12 +52,15 @@ gameMain: GameMainDef
 	initialPlayerChar = me
 
 	newGame() {
-		syslog.enable('ruleEngineController');
+		//syslog.enable('ruleEngineController');
 		showIntro();
 		runGame(true);
 	}
 
 	showIntro() {
+		"Reading (but not examining) the sign will trigger the
+		scene.  The scene will only run once.
+		<.p> ";
 	}
 ;
 

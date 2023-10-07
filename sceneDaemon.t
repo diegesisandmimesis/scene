@@ -45,21 +45,6 @@ class SceneDaemon: Scene
 		return(startCheck());
 	}
 
-	_start() {
-		// Make sure we're not already running
-		if(isActive() == true)
-			return;
-
-		_debug('starting daemon');
-
-		setActive(true);
-
-		// Remember when we started.
-		startTurn = libGlobal.totalTurns;
-
-		start();
-	}
-
 	// See if we should start.
 	// PROBABLY called by the sceneController
 	tryStarting() {
@@ -171,10 +156,41 @@ class SceneDaemon: Scene
 	stop(v?) {}
 	runCheck() { return(true); }
 */
-	start() {}
-	_stop(v?) {
-		stopState = v;
-		stop(v);
+	// The difference between a daemon and a default scene is that
+	// the daemon scene doesn't reset automatically.
+	tryRuleMatch() {
+		inherited();
+		_revertFlag = nil;
 	}
-	stop(v?) {}
+
+	trySceneAction() {
+		if(isActive != true)
+			return;
+
+		if(startTurn == nil)
+			start();
+		else
+			sceneAction();
+	}
+
+	start() {
+		_debug('starting daemon');
+
+		setActive(true);
+
+		// Remember when we started.
+		startTurn = libGlobal.totalTurns;
+
+		sceneStartAction();
+	}
+
+	stop(v?) {
+		_debug('stopping daemon');
+
+		stopState = v;
+		sceneStopAction();
+	}
+
+	sceneStartAction() {}
+	sceneStopAction() {}
 ;
