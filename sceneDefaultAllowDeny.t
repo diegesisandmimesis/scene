@@ -9,12 +9,13 @@
 
 #include "scene.h"
 
+/*
 // Base class for SceneDefaultAllow and SceneDefaultDeny.
 class SceneDefaultAllowDeny: Scene
-	// List of actions explicitly allowed.  Used by SceneDefaultDeny.
+	// List of actions explicitly allowed.
 	allowList = nil
 
-	// List of actions explicitly denied.  Used by SceneDefaultAllow.
+	// List of actions explicitly denied.
 	denyList = nil
 ;
 
@@ -37,5 +38,29 @@ class SceneDefaultDeny: SceneDefaultAllowDeny
 			reportFailure(&sceneCantDefaultDeny);
 			exit;
 		}
+	}
+;
+*/
+class SceneDefaultAllow: Scene
+	rulebookClass = RulebookMatchAny
+	sceneBlockMsg = nil
+	sceneBeforeAction() {
+		if(sceneBlockMsg != nil)
+			reportFailure(sceneBlockMsg);
+		else
+			reportFailure(&sceneCantDefaultAllow);
+		exit;
+	}
+;
+
+class SceneDefaultDeny: Scene
+	rulebookClass = RulebookMatchNone
+	sceneBlockMsg = nil
+	sceneBeforeAction() {
+		if(sceneBlockMsg != nil)
+			reportFailure(sceneBlockMsg);
+		else
+			reportFailure(&sceneCantDefaultDeny);
+		exit;
 	}
 ;

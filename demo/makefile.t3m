@@ -9,5 +9,6 @@
 -lib beforeAfter/beforeAfter
 -lib senseGrep/senseGrep
 -lib syslog/syslog
+-lib ruleEngine/ruleEngine
 -lib ../scene
 -source src/sample.t

@@ -7,21 +7,18 @@
 
 #include "scene.h"
 
-class SceneController: RuleEngineController
+class SceneController: RuleEngine
 	syslogID = 'sceneController'
 
-	// Vector containing all Scene instances.
 	_sceneList = perInstance(new Vector())
 
 	execute() {
 		inherited();
-		initScenes();
+		initializeScenes();
 	}
 
-	// Take care of initializing all the Scene instnaces.
-	initScenes() {
+	initializeScenes() {
 		forEachInstance(Scene, function(o) {
-			o.initializeScene();
 			_sceneList.append(o);
 		});
 	}
@@ -35,7 +32,7 @@ class SceneController: RuleEngineController
 			return(nil);
 
 		_sceneList.append(obj);
-
+		
 		return(true);
 	}
 
@@ -44,7 +41,7 @@ class SceneController: RuleEngineController
 		if(obj == nil)
 			return(nil);
 
-		if(_sceneList.indexOf(obj) == nil)
+		if(_sceneList.indexOf(obj) != nil)
 			return(nil);
 
 		_sceneList.removeElement(obj);
@@ -68,26 +65,11 @@ class SceneController: RuleEngineController
 	// This happens AFTER the action for the turn is resolved.
 	updateRuleEngine() {
 		_sceneList.forEach(function(o) { o.trySceneAction(); });
+		_revertScenes();
 		inherited();
 	}
 
-	_turnSetup() {
-		inherited();
-		//_setSceneMatches();
-	}
-
-	_turnCleanup() {
-		inherited();
-		_clearSceneMatches();
-	}
-
-/*
-	_setSceneMatches() {
-		_sceneList.forEach(function(o) { o.tryRuleMatch(); });
-	}
-*/
-
-	_clearSceneMatches() {
+	_revertScenes() {
 		_sceneList.forEach(function(o) { o.tryRuleRevert(); });
 	}
 ;

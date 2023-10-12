@@ -48,6 +48,29 @@ versionInfo: GameID
 	}
 ;
 
+gameMain: GameMainDef
+	initialPlayerChar = me
+
+	newGame() {
+		showIntro();
+		runGame(true);
+	}
+
+	showIntro() {
+#ifdef SYSLOG
+		"This demo was compiled with the <b>-D SYSLOG</b> flag,
+		meaning there will be a bunch of debugging output.
+		<.p>
+		The lines starting with <q>sceneController:</q> show the timing
+		of the various stages of the scene controller's operation, and
+		the lines starting with <q>sceneTrigger:</q> show the state
+		of the demo scene, specifically how well the current action
+		matches the trigger conditions.
+		<.p> ";
+#endif // SYSLOG
+	}
+;
+
 startRoom: Room 'Void'
 	"This is a featureless void with a sign on what passes for a wall. "
 ;
@@ -77,28 +100,5 @@ demoScene: SceneTrigger
 	sceneAfterAction() {
 		"<.p>\nThis is the scene's sceneAfterAction(), which does
 		about as much as the sceneBeforeAction(), only later. "; 
-	}
-;
-
-gameMain: GameMainDef
-	initialPlayerChar = me
-
-	newGame() {
-		showIntro();
-		runGame(true);
-	}
-
-	showIntro() {
-#ifdef SYSLOG
-		"This demo was compiled with the <b>-D SYSLOG</b> flag,
-		meaning there will be a bunch of debugging output.
-		<.p>
-		The lines starting with <q>sceneController:</q> show the timing
-		of the various stages of the scene controller's operation, and
-		the lines starting with <q>sceneTrigger:</q> show the state
-		of the demo scene, specifically how well the current action
-		matches the trigger conditions.
-		<.p> ";
-#endif // SYSLOG
 	}
 ;

@@ -92,8 +92,8 @@ myScene: Scene
 	}
 ;
 +SceneTrigger
-	triggerObject = sign
-	triggerAction = ReadAction
+	dstObject = sign
+	action = ReadAction
 ;
 
 myController: SceneController;

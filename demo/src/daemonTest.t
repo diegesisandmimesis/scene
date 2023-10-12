@@ -50,7 +50,8 @@ gameMain: GameMainDef
 
 	showIntro() {
 		"This demo contains a simple daemon-based scene.  The
-		scene starts when you <b>&gt;TAKE PEBBLE</b>.
+		scene starts when you <b>&gt;TAKE PEBBLE</b> and stops
+		when you <b>&gt;DROP PEBBLE</b>.
 		<.p> ";
 	}
 ;
@@ -60,6 +61,8 @@ startRoom: Room 'Void' "This is a featureless void.";
 +pebble: Thing 'small round pebble' 'pebble'
 	"A small, round pebble.  Picking it up starts the scene. "
 ;
+
+myController: SceneController;
 
 demoScene: SceneDaemon
 	unique = true
@@ -75,15 +78,13 @@ demoScene: SceneDaemon
 			<<toString(getDuration())>> turns ago.\n ";
 	}
 ;
-+SceneStart;
-++SceneTrigger
-	triggerObject = pebble
-	triggerAction = TakeAction
++SceneStartMatchAny;
+++Trigger
+	srcObject = pebble
+	action = TakeAction
 ;
 +SceneEnd;
-++SceneTrigger
-	triggerObject = pebble
-	triggerAction = DropAction
+++Trigger
+	srcObject = pebble
+	action = DropAction
 ;
-
-myController: SceneController;

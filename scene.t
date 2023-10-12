@@ -27,17 +27,16 @@ class Scene: RuleUser
 	unique = nil		// can we run more than once
 	runCount = 0		// how many times have we run
 
-	rulebookClass = SceneRulebook
+	rulebookClass = SceneRulebook	// base class for our rulebooks
 
-	_revertFlag = nil
+	_revertFlag = nil	// make ourselves inactive at end of turn
 
-	// Getter and setter for active.  Done this way because subclasses
-	// might want to implement fancier checks (checking more than
-	// one property, for instance).
+	// Getter and setter for active.  Active means "run this turn".
 	isActive() { return(active == true); }
 	setActive(v) { active = ((v == true) ? true : nil); }
 
-	// Can we become active?
+	// Getter and setter for available.  Available means "can become
+	// active this turn".
 	isAvailable() { return(available && !isActive() && uniqueCheck()); }
 	setAvailable(v?) { available = ((v == true) ? true : nil); }
 
@@ -48,6 +47,11 @@ class Scene: RuleUser
 	addRunCount() { runCount += 1; }
 
 	// Called during preinit.
+	initializeRuleUser() {
+		inherited();
+		initializeScene();
+	}
+
 	initializeScene() {}
 
 	// Normally called by SceneRulebook.callback() when all the rules
@@ -60,12 +64,6 @@ class Scene: RuleUser
 		// If we can't become active this turn, nothing to do.
 		if(isAvailable() != true)
 			return;
-
-/*
-		// If we don't match all rules this turn, nothing to do.
-		if(checkRulebooks() != true)
-			return;
-*/
 
 		// Remember to revert at the end of the turn.
 		_revertFlag = true;
@@ -105,4 +103,8 @@ class Scene: RuleUser
 	sceneBeforeAction() {}
 	sceneAfterAction() {}
 	sceneAction() {}
+
+	rulebookMatchAction(id) {
+		tryRuleMatch();
+	}
 ;

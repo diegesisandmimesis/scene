@@ -40,15 +40,6 @@ versionInfo: GameID
 	}
 ;
 
-startRoom: Room 'Void' "This is a featureless void.";
-+me: Person;
-+pebble: Thing 'small round pebble' 'pebble' "A small, round pebble. ";
-
-pebbleScene: SceneDefaultAllow
-	active = true
-	denyList = TakeAction
-;
-
 gameMain: GameMainDef
 	initialPlayerChar = me
 
@@ -62,4 +53,16 @@ gameMain: GameMainDef
 		all actions except <b>&gt;TAKE</b>. 
 		<.p> ";
 	}
+;
+
+startRoom: Room 'Void' "This is a featureless void.";
++me: Person;
++pebble: Thing 'small round pebble' 'pebble' "A small, round pebble. ";
+
+myController: SceneController;
+
+SceneDefaultAllow;
++Trigger
+	srcObject = pebble
+	action = TakeAction
 ;

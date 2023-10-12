@@ -40,15 +40,6 @@ versionInfo: GameID
 	}
 ;
 
-startRoom: Room 'Void' "This is a featureless void.";
-+me: Person;
-+pebble: Thing 'small round pebble' 'pebble' "A small, round pebble. ";
-
-pebbleScene: SceneDefaultDeny
-	active = true
-	allowList = TakeAction
-;
-
 gameMain: GameMainDef
 	initialPlayerChar = me
 
@@ -59,7 +50,19 @@ gameMain: GameMainDef
 
 	showIntro() {
 		"This demo contains a default deny scene.  The only
-		action it permits is <b>&gt;TAKE</b>.
+		actions it permits are <b>&gt;TAKE</b> and
+		<b>&gt;QUIT</b>.
 		<.p> ";
 	}
+;
+
+startRoom: Room 'Void' "This is a featureless void.";
++me: Person;
++pebble: Thing 'small round pebble' 'pebble' "A small, round pebble. ";
+
+myController: SceneController;
+
+SceneDefaultDeny;
++Trigger
+	action = static [ TakeAction, QuitAction ]
 ;

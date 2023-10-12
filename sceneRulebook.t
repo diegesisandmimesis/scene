@@ -9,10 +9,6 @@
 
 class SceneRulebook: Rulebook
 	syslogID = 'SceneRulebook'
-
-	// By default, a rulebook tries to set its owning scene to
-	// be active for the turn.
-	callback() { if(owner) owner.tryRuleMatch(); }
 ;
 
 // For daemon startup.
@@ -22,7 +18,15 @@ class SceneStart: SceneRulebook
 	syslogID = 'SceneStart'
 ;
 
+class SceneStartMatchAny: SceneStart, RulebookMatchAny;
+class SceneStartMatchAll: SceneStart;
+class SceneStartMatchNone: SceneStart, RulebookMatchNone;
+
 // For daemon shutdown.
 class SceneEnd: SceneRulebook
 	callback() { if(owner) owner.tryDaemonStop(); }
 ;
+
+class SceneEndMatchAny: SceneEnd, RulebookMatchAny;
+class SceneEndMatchAll: SceneStart;
+class SceneEndMatchNone: SceneStart, RulebookMatchNone;
