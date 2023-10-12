@@ -86,9 +86,9 @@ startRoom: Room 'Void'
 ;
 +me: Person;
 
-demoScene: SceneTrigger
-	triggerObject = sign
-	triggerAction = ReadAction
+myController: SceneController;
+
+demoScene: Scene
 	sceneBeforeAction() {
 		"\nThis is the scene's sceneBeforeAction(), which doesn't
 		really do much. <.p> ";
@@ -101,4 +101,8 @@ demoScene: SceneTrigger
 		"<.p>\nThis is the scene's sceneAfterAction(), which does
 		about as much as the sceneBeforeAction(), only later. "; 
 	}
+;
++Trigger
+	srcObject = sign
+	action = ReadAction
 ;

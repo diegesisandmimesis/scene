@@ -2,8 +2,68 @@
 //
 // scene.t
 //
-//	A TADS3 module for implementing scenes.
+//	A TADS3 module for implementing scenes.  Built on top of
+//	the ruleEngine module.
 //
+//
+// BASIC USAGE
+//
+//	First, the game must declare exactly one SceneController instance:
+//
+//		// Declare the scene controller instance
+//		myController: SceneController;
+//
+//	The object name doesn't matter, and in general you don't need to
+//	modify the controller itself to implement scenes.
+//
+//	Declare a basic scene using:
+//
+//		// A useless scene that runs continuously.
+//		myScene: Scene
+//			// Set the scene to be active by default.
+//			active = true
+//
+//			// This method will be called every turn the
+//			// scene is active.
+//			sceneAction() {
+//				"<.p>This is the scene, doing nothing. ";
+//			}
+//		;
+//
+//	This scene will run every turn, until something manually calls
+//	myScene.setActive(nil) to turn it off.
+//
+//	Instead of manually enabling and disabling the scene, you can
+//	have a scene trigged by specific conditions:
+//
+//		// A useless scene that runs whenever >TAKE is used.
+//		myScene: Scene
+//			sceneAction() {
+//				"<.p>This is the scene, noticing that you
+//				used TAKE. ";
+//			}
+//		;
+//		+Trigger
+//			action = TakeAction
+//		;
+//
+//	In this case the scene is reacting to the action.  If you want
+//	to PREVENT the action, you can use:
+//
+//		// This scene will prevent the >TAKE action.
+//		myScene: Scene
+//			sceneBeforeAction() {
+//				"<.p>You can't take anything. ";
+//				exit;
+//			}
+//		;
+//		+Trigger
+//			action = TakeAction
+//		;
+//
+//
+// The demo games in the ./demo directory contain more examples of how
+// to use scenes.
 //
 #include <adv3.h>
 #include <en_us.h>
