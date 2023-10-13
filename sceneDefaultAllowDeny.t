@@ -9,38 +9,6 @@
 
 #include "scene.h"
 
-/*
-// Base class for SceneDefaultAllow and SceneDefaultDeny.
-class SceneDefaultAllowDeny: Scene
-	// List of actions explicitly allowed.
-	allowList = nil
-
-	// List of actions explicitly denied.
-	denyList = nil
-;
-
-// Allow all actions by default except those on the deny list.
-class SceneDefaultAllow: SceneDefaultAllowDeny
-	isActionAllowed(action?) { return(!_checkListFor(action, denyList)); }
-	sceneBeforeAction() {
-		if(!isActionAllowed(gAction)) {
-			reportFailure(&sceneCantDefaultAllow);
-			exit;
-		}
-	}
-;
-
-// Deny all actions by default except those on the allow list.
-class SceneDefaultDeny: SceneDefaultAllowDeny
-	isActionAllowed(action?) { return(_checkListFor(action, allowList)); }
-	sceneBeforeAction() {
-		if(!isActionAllowed(gAction)) {
-			reportFailure(&sceneCantDefaultDeny);
-			exit;
-		}
-	}
-;
-*/
 class SceneDefaultAllow: Scene
 	rulebookClass = RulebookMatchAny
 	sceneBlockMsg = nil
