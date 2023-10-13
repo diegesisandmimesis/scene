@@ -7,7 +7,7 @@
 
 #include "scene.h"
 
-class SceneController: RuleEngine
+class SceneController: RuleEngineOptimized
 	syslogID = 'sceneController'
 
 	_sceneList = perInstance(new Vector())
