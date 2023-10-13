@@ -64,7 +64,7 @@ startRoom: Room 'Void' "This is a featureless void.";
 
 myController: SceneController;
 
-demoScene: SceneDaemon
+daemonScene: SceneDaemon
 	unique = true
 
 	sceneStartAction() {

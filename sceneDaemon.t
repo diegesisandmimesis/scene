@@ -160,6 +160,9 @@ class SceneDaemon: Scene
 		// Reset the shutdown flag.
 		shutdownFlag = nil;
 
+		// Add to our run count.
+		addRunCount();
+
 		// Call the scene stop action.
 		sceneStopAction();
 	}
