@@ -165,6 +165,9 @@ class SceneDaemon: Scene
 
 		// Call the scene stop action.
 		sceneStopAction();
+
+		if(unique == true)
+			finalizeRulebooks();
 	}
 
 	// Stub methods.
