@@ -168,4 +168,20 @@ class Scene: RuleUser
 	rulebookMatchAction(id) {
 		tryRuleMatch();
 	}
+
+	tryBeforeAction() {
+		inherited();
+		trySceneBeforeAction();
+	}
+
+	tryAfterAction() {
+		inherited();
+		trySceneAfterAction();
+	}
+
+	tryAction() {
+		inherited();
+		trySceneAction();
+		tryRuleRevert();
+	}
 ;

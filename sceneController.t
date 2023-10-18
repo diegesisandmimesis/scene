@@ -7,7 +7,7 @@
 
 #include "scene.h"
 
-class SceneController: RuleEngineOptimized
+class SceneController: RuleEngine
 	syslogID = 'sceneController'
 
 	_sceneList = perInstance(new Vector())
@@ -49,6 +49,7 @@ class SceneController: RuleEngineOptimized
 		return(true);
 	}
 
+/*
 	globalBeforeAction() {
 		inherited();
 		_sceneList.forEach(function(o) { o.trySceneBeforeAction(); });
@@ -72,4 +73,5 @@ class SceneController: RuleEngineOptimized
 	_revertScenes() {
 		_sceneList.forEach(function(o) { o.tryRuleRevert(); });
 	}
+*/
 ;
