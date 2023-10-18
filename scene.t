@@ -147,10 +147,11 @@ class Scene: RuleUser
 	// before running.
 	// These are what are called by the scene controller.
 	trySceneAction() {
-		if(isActive() == true) {
-			sceneAction();
-			addRunCount();
-		}
+		if(isActive() != true)
+			return;
+
+		sceneAction();
+		addRunCount();
 	}
 	trySceneBeforeAction() { if(isActive() == true) sceneBeforeAction(); }
 	trySceneAfterAction() { if(isActive() == true) sceneAfterAction(); }

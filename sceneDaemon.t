@@ -167,7 +167,7 @@ class SceneDaemon: Scene
 		sceneStopAction();
 
 		if(unique == true)
-			finalizeRulebooks();
+			disableAllRulebooks();
 	}
 
 	// Stub methods.
