@@ -48,30 +48,4 @@ class SceneController: RuleEngine
 
 		return(true);
 	}
-
-/*
-	globalBeforeAction() {
-		inherited();
-		_sceneList.forEach(function(o) { o.trySceneBeforeAction(); });
-	}
-
-	// Method called by beforeAfterController after every action.
-	globalAfterAction() {
-		_sceneList.forEach(function(o) { o.trySceneAfterAction(); });
-		inherited();
-	}
-
-	// Called by the Daemon.  This is where we check for
-	// scenes starting and stopping this turn.
-	// This happens AFTER the action for the turn is resolved.
-	updateRuleEngine() {
-		_sceneList.forEach(function(o) { o.trySceneAction(); });
-		_revertScenes();
-		inherited();
-	}
-
-	_revertScenes() {
-		_sceneList.forEach(function(o) { o.tryRuleRevert(); });
-	}
-*/
 ;
