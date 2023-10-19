@@ -166,8 +166,10 @@ class SceneDaemon: Scene
 		// Call the scene stop action.
 		sceneStopAction();
 
-		if(unique == true)
-			disableAllRulebooks();
+		if(unique == true) {
+			//disableAllRulebooks();
+			disableRuleUser();
+		}
 	}
 
 	// Stub methods.
