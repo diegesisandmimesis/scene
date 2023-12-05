@@ -59,6 +59,7 @@ startRoom: Room 'Void' "This is a featureless void.";
 +me: Person;
 +pebble: Thing 'small round pebble' 'pebble' "A small, round pebble. ";
 
+//RuleEngine;
 myScene: Scene
 	active = true
 	sceneAction() {
@@ -66,4 +67,4 @@ myScene: Scene
 	}
 ;
 
-myController: SceneController;
+//myController: SceneController;

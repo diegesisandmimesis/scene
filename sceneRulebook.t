@@ -28,5 +28,5 @@ class SceneEnd: SceneRulebook
 ;
 
 class SceneEndMatchAny: SceneEnd, RulebookMatchAny;
-class SceneEndMatchAll: SceneStart;
-class SceneEndMatchNone: SceneStart, RulebookMatchNone;
+class SceneEndMatchAll: SceneEnd;
+class SceneEndMatchNone: SceneEnd, RulebookMatchNone;

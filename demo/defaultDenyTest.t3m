@@ -8,6 +8,7 @@
 -lib beforeAfter/beforeAfter
 -lib senseGrep/senseGrep
 -lib syslog/syslog
+-lib linter/linter
 -lib ruleEngine/ruleEngine
 -lib ../scene
 -source src/defaultDenyTest.t

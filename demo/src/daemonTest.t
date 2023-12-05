@@ -62,8 +62,7 @@ startRoom: Room 'Void' "This is a featureless void.";
 	"A small, round pebble.  Picking it up starts the scene. "
 ;
 
-myController: SceneController;
-
+//myController: SceneController;
 daemonScene: SceneDaemon
 	unique = true
 
@@ -83,7 +82,7 @@ daemonScene: SceneDaemon
 	srcObject = pebble
 	action = TakeAction
 ;
-+SceneEnd;
++SceneEndMatchAny;
 ++Trigger
 	srcObject = pebble
 	action = DropAction

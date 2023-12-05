@@ -168,7 +168,7 @@ class SceneDaemon: Scene
 
 		if(unique == true) {
 			//disableAllRulebooks();
-			disableRuleUser();
+			disableRuleSystem();
 		}
 	}
 

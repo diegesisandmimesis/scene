@@ -78,7 +78,7 @@ sceneModuleID: ModuleID {
         listingOrder = 99
 }
 
-class Scene: RuleUser
+class Scene: RuleSystem
 	syslogID = 'Scene'
 
 	active = nil		// are we active this turn
@@ -107,8 +107,14 @@ class Scene: RuleUser
 	addRunCount() { runCount += 1; }
 
 	// Called during preinit.
-	initializeRuleUser() {
+	initializeRuleSystem() {
 		inherited();
+		_initializeScene();
+	}
+
+	_initializeScene() {
+		if(ruleEngine == nil)
+			sceneController.addRuleSystem(self);
 		initializeScene();
 	}
 

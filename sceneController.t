@@ -7,6 +7,9 @@
 
 #include "scene.h"
 
+sceneController: RuleEngine;
+
+/*
 class SceneController: RuleEngine
 	syslogID = 'sceneController'
 
@@ -49,3 +52,4 @@ class SceneController: RuleEngine
 		return(true);
 	}
 ;
+*/

@@ -60,9 +60,20 @@ startRoom: Room 'Void' "This is a featureless void.";
 +me: Person;
 +pebble: Thing 'small round pebble' 'pebble' "A small, round pebble. ";
 
-myController: SceneController;
-
 SceneDefaultDeny;
 +Trigger
 	action = static [ TakeAction, QuitAction ]
 ;
+/*
+RuleEngine;
++RuleSystem;
+++RulebookMatchNone
+	callback() { "RulebookMatchNone.callback()\n "; }
+	tryCheck(type?) {
+		local v = inherited(type);
+		"tryCheck(<<toString(type)>>) = <<toString(v)>>\n ";
+		return(v);
+	}
+;
++++Trigger action = [ TakeAction, QuitAction ];
+*/

@@ -6,6 +6,7 @@
 -lib system
 -lib adv3/adv3
 -lib beforeAfter/beforeAfter
+-lib linter/linter
 -lib senseGrep/senseGrep
 -lib syslog/syslog
 -lib ruleEngine/ruleEngine

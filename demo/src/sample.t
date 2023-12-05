@@ -86,7 +86,7 @@ startRoom: Room 'Void'
 ;
 +me: Person;
 
-myController: SceneController;
+//myController: SceneController;
 
 demoScene: Scene
 	sceneBeforeAction() {
