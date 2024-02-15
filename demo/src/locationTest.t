@@ -79,8 +79,6 @@ northRoom: Room 'North Room'
 ;
 +rock: Thing 'ordinary rock' 'rock' "An ordinary rock. ";
 
-myController: SceneController;
-
 SceneDefaultAllow
 	sceneBeforeAction() {
 		reportFailure('A mysterious force prevents you from taking
