@@ -24,7 +24,7 @@ class SceneStartMatchNone: SceneStart, RulebookMatchNone;
 
 // For daemon shutdown.
 class SceneEnd: SceneRulebook
-	callback() { if(owner) owner.tryDaemonStop(); }
+	callback() { if(ruleSystem) ruleSystem.tryDaemonStop(); }
 ;
 
 class SceneEndMatchAny: SceneEnd, RulebookMatchAny;
