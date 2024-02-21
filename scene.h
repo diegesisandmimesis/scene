@@ -23,4 +23,6 @@
 #error "senseGrep should be in /home/user/tads/senseGrep ."
 #endif // SENSE_GREP_H
 
+Blocker template @action "sceneAction"?;
+
 #define SCENE_H
