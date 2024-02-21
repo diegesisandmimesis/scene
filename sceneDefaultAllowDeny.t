@@ -9,9 +9,12 @@
 
 #include "scene.h"
 
-class SceneDefaultAllow: Scene
-	rulebookClass = RulebookMatchAny
+class SceneDefaultAllowDeny: Scene
 	sceneBlockMsg = nil
+;
+
+class SceneDefaultAllow: SceneDefaultAllowDeny
+	rulebookClass = RulebookMatchAny
 	sceneBeforeAction() {
 		if(sceneBlockMsg != nil)
 			reportFailure(sceneBlockMsg);
@@ -21,9 +24,8 @@ class SceneDefaultAllow: Scene
 	}
 ;
 
-class SceneDefaultDeny: Scene
+class SceneDefaultDeny: SceneDefaultAllowDeny
 	rulebookClass = RulebookMatchNone
-	sceneBlockMsg = nil
 	sceneBeforeAction() {
 		if(sceneBlockMsg != nil)
 			reportFailure(sceneBlockMsg);
