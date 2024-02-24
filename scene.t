@@ -87,8 +87,6 @@ class Scene: RuleSystem
 	unique = nil		// can we run more than once
 	runCount = 0		// how many times have we run
 
-	_sceneTimestamp = nil
-
 	rulebookClass = SceneRulebook	// base class for our rulebooks
 
 	revertFlag = nil	// make ourselves inactive at end of turn
