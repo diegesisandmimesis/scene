@@ -1,0 +1,19 @@
+-D LANGUAGE=en_us
+-D MESSAGESTYLE=neu
+-Fy obj -Fo obj
+-Fs ../../
+-o games/defaultDenyMulti.t3
+-lib system
+-lib adv3/adv3
+-lib beforeAfter/beforeAfter
+-lib senseGrep/senseGrep
+-lib syslog/syslog
+-lib timestamp/timestamp
+-lib linter/linter
+-lib ruleEngine/ruleEngine
+-lib modularExecuteCommand/modularExecuteCommand
+-lib moreFailureReports/moreFailureReports
+-lib execCommandAs/execCommandAs
+-lib ../scene
+-source src/defaultDenyMulti.t
+-source reflect.t
