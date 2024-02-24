@@ -23,7 +23,7 @@
 #error "senseGrep should be in /home/user/tads/senseGrep ."
 #endif // SENSE_GREP_H
 
-SceneDefaultAllowDeny template 'sceneBlockMsg'?;
-Blocker template @action "sceneAction"?;
+SceneDefaultAllowDeny template @location? 'sceneBlockMsg'?;
+Blocker template @action 'sceneBlockMsg'? "sceneAction"?;
 
 #define SCENE_H

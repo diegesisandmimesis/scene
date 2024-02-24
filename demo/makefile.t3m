@@ -9,6 +9,7 @@
 -lib beforeAfter/beforeAfter
 -lib senseGrep/senseGrep
 -lib syslog/syslog
+-lib timestamp/timestamp
 -lib linter/linter
 -lib ruleEngine/ruleEngine
 -lib ../scene

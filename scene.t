@@ -87,13 +87,19 @@ class Scene: RuleSystem
 	unique = nil		// can we run more than once
 	runCount = 0		// how many times have we run
 
+	_sceneTimestamp = nil
+
 	rulebookClass = SceneRulebook	// base class for our rulebooks
 
 	_revertFlag = nil	// make ourselves inactive at end of turn
 
 	// Getter and setter for active.  Active means "run this turn".
-	isActive() { return(active == true); }
-	setActive(v) { active = ((v == true) ? true : nil); }
+	//isActive() { return(active == true); }
+	//setActive(v) { active = ((v == true) ? true : nil); }
+	isActive() { return(gCheckTimestamp(_sceneTimestamp)); }
+	setActive(v) {
+		_sceneTimestamp = ((v == true) ? gTimestamp : nil);
+	}
 
 	// Getter and setter for available.  Available means "can become
 	// active this turn".
@@ -108,8 +114,21 @@ class Scene: RuleSystem
 
 	// Called during preinit.
 	initializeRuleSystem() {
+		_fixSceneLocation(location);
 		inherited();
 		_initializeScene();
+	}
+
+	// Kludge to allow us to declare the scene location to be a room.
+	_fixSceneLocation(obj) {
+		local eng;
+
+		if((obj == nil) || !obj.ofKind(RuleScheduler))
+			return;
+
+		eng = RuleEngine.createInstance();
+		eng.ruleScheduler = obj;
+		location = eng;
 	}
 
 	_initializeScene() {
@@ -191,3 +210,6 @@ class Scene: RuleSystem
 		tryRuleRevert();
 	}
 ;
+
+class SceneRoom: RuleScheduler, Room;
+class SceneThing: RuleScheduler, Thing;

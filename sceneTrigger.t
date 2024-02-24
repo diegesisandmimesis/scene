@@ -12,7 +12,45 @@ class SceneTrigger: Trigger
 	sceneAction = nil
 ;
 
+class SceneTravelAction: object
+	action = static [ TravelAction, TravelViaAction ]
+;
+
+class SceneSenseAction: object
+	action = static [ ExamineAction, LookAction, SmellAction,
+		ListenToAction, TasteAction, FeelAction, SenseImplicitAction ]
+;
+
+class AllowAction: SceneTrigger
+	_tryRulebook(obj) {
+		if((obj != nil) && !obj.ofKind(SceneDefaultDeny)) {
+			_debug('attempt to place AllowAction inside something
+				other than a SceneDefaultDeny instance');
+			return(nil);
+		}
+		return(inherited(obj));
+	}
+;
+
+class AllowTravel: SceneTravelAction, AllowAction;
+class AllowSenseActions: SceneSenseAction, AllowAction;
+
+class DenyAction: SceneTrigger
+	_tryRulebook(obj) {
+		if((obj != nil) && !obj.ofKind(SceneDefaultAllow)) {
+			_debug('attempt to place DenyAction inside something
+				other than a SceneDefaultAllow instance');
+			return(nil);
+		}
+		return(inherited(obj));
+	}
+;
+
+class DenyTravel: SceneTravelAction, DenyAction;
+class DenySenseActions: SceneSenseAction, DenyAction;
+
 class Blocker: SceneTrigger
+	sceneBlockMsg = nil
 	matchRule(data?) {
 		// If the basic matching logic failed, we don't have anything
 		// to do.
@@ -24,10 +62,17 @@ class Blocker: SceneTrigger
 		if(propType(&sceneAction) != TypeNil)
 			sceneAction;
 
-		// Kludge to make sure the action is marked as a failure.
-		reportFailure('');
+		if(propType(&sceneBlockMsg) != TypeNil)
+			reportFailure(sceneBlockMsg);
+		else
+			// Kludge to make sure the action is marked as
+			// a failure.
+			reportFailure('');
 
 		// End command processing.
 		exit;
 	}
 ;
+
+class BlockAction: Blocker;
+class ReplaceAction: Blocker;

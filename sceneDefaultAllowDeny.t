@@ -20,6 +20,7 @@ class SceneDefaultAllow: SceneDefaultAllowDeny
 			reportFailure(sceneBlockMsg);
 		else
 			reportFailure(&sceneCantDefaultAllow);
+
 		exit;
 	}
 ;
@@ -31,6 +32,7 @@ class SceneDefaultDeny: SceneDefaultAllowDeny
 			reportFailure(sceneBlockMsg);
 		else
 			reportFailure(&sceneCantDefaultDeny);
+
 		exit;
 	}
 ;

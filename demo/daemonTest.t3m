@@ -9,6 +9,7 @@
 -lib linter/linter
 -lib senseGrep/senseGrep
 -lib syslog/syslog
+-lib timestamp/timestamp
 -lib ruleEngine/ruleEngine
 -lib ../scene
 -source src/daemonTest.t
