@@ -91,7 +91,7 @@ class Scene: RuleSystem
 
 	rulebookClass = SceneRulebook	// base class for our rulebooks
 
-	_revertFlag = nil	// make ourselves inactive at end of turn
+	revertFlag = nil	// make ourselves inactive at end of turn
 
 	// Getter and setter for active.  Active means "run this turn".
 	//isActive() { return(active == true); }
@@ -100,13 +100,23 @@ class Scene: RuleSystem
 	// We're active if the active property is EITHER boolean
 	// true OR the current timestamp.
 	isActive() {
-		return((active == true) ? true : gCheckTimestamp(active));
+		if(active != true)
+			return(nil);
+
+		if((revertFlag != nil) && (!gCheckTimestamp(revertFlag))) {
+			revertFlag = nil;
+			setActive(nil);
+			return(nil);
+		}
+
+		return(true);
 	}
 
 	// If the arg is boolean true, set the active property to be
 	// the current timestamp.  Otherwise set active to nil.
 	setActive(v) {
-		active = ((v == true) ? gTimestamp : nil);
+		//active = ((v == true) ? gTimestamp : nil);
+		active = v;
 	}
 
 	// Getter and setter for available.  Available means "can become
@@ -159,7 +169,7 @@ class Scene: RuleSystem
 			return;
 
 		// Remember to revert at the end of the turn.
-		_revertFlag = true;
+		revertFlag = gTimestamp;
 
 		// Set ourselves active.
 		setActive(true);
@@ -168,10 +178,10 @@ class Scene: RuleSystem
 	// Revert to an inactive state if we were only active because of
 	// rule matching.
 	tryRuleRevert() {
-		if(_revertFlag != true)
+		if(revertFlag == nil)
 			return;
 
-		_revertFlag = nil;
+		revertFlag = nil;
 
 		setActive(nil);
 	}

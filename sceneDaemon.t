@@ -68,7 +68,7 @@ class SceneDaemon: Scene
 	// the daemon scene doesn't reset automatically.
 	tryRuleMatch() {
 		inherited();
-		_revertFlag = nil;
+		revertFlag = nil;
 	}
 
 	// Called by the controller, see if we're running this turn.
