@@ -20,8 +20,8 @@
 //
 //		// A useless scene that runs continuously.
 //		myScene: Scene
-//			// Set the scene to be active by default.
-//			active = true
+//			// Set the to be always active.
+//			isActive() { return(true); }
 //
 //			// This method will be called every turn the
 //			// scene is active.
@@ -96,9 +96,17 @@ class Scene: RuleSystem
 	// Getter and setter for active.  Active means "run this turn".
 	//isActive() { return(active == true); }
 	//setActive(v) { active = ((v == true) ? true : nil); }
-	isActive() { return(gCheckTimestamp(_sceneTimestamp)); }
+
+	// We're active if the active property is EITHER boolean
+	// true OR the current timestamp.
+	isActive() {
+		return((active == true) ? true : gCheckTimestamp(active));
+	}
+
+	// If the arg is boolean true, set the active property to be
+	// the current timestamp.  Otherwise set active to nil.
 	setActive(v) {
-		_sceneTimestamp = ((v == true) ? gTimestamp : nil);
+		active = ((v == true) ? gTimestamp : nil);
 	}
 
 	// Getter and setter for available.  Available means "can become

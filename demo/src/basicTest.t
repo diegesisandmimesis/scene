@@ -62,6 +62,7 @@ startRoom: Room 'Void' "This is a featureless void.";
 //RuleEngine;
 myScene: Scene
 	active = true
+	//isActive() { return(true); }
 	sceneAction() {
 		"<.p>This is the output of sceneAction(). ";
 	}
