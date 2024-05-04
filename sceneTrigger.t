@@ -21,6 +21,14 @@ class SceneSenseAction: object
 		ListenToAction, TasteAction, FeelAction, SenseImplicitAction ]
 ;
 
+class SceneConvAction: object
+	action = static [ ConvIAction, ConvTopicTAction ]
+;
+
+class SceneIdleAction: object
+	action = static [ WaitAction, InventoryAction ]
+;
+
 class AllowAction: SceneTrigger
 	_tryRulebook(obj) {
 		if((obj != nil) && !obj.ofKind(SceneDefaultDeny)) {
@@ -34,6 +42,8 @@ class AllowAction: SceneTrigger
 
 class AllowTravel: SceneTravelAction, AllowAction;
 class AllowSenseActions: SceneSenseAction, AllowAction;
+class AllowConvActions: SceneConvAction, AllowAction;
+class AllowIdleActions: SceneIdleAction, AllowAction;
 
 class DenyAction: SceneTrigger
 	_tryRulebook(obj) {
@@ -48,6 +58,8 @@ class DenyAction: SceneTrigger
 
 class DenyTravel: SceneTravelAction, DenyAction;
 class DenySenseActions: SceneSenseAction, DenyAction;
+class DenyConvActions: SceneConvAction, DenyAction;
+class DenyIdleActions: SceneIdleAction, DenyAction;
 
 class Blocker: SceneTrigger
 	sceneBlockMsg = nil
